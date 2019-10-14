@@ -1,0 +1,133 @@
+<!DOCtype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+        <title>我搭建的网站</title>
+        <meta name="keywords" content="">
+        <meta name="description" content="">
+        <link rel="stylesheet" href="../static/css/reset.css">
+        <style>
+            body{
+                margin:0;
+            }
+            body>div{
+                width:500px;
+                margin:50px auto;
+            }
+           canvas{
+                display:block;
+                background-color:#ccc;
+                margin-bottom: 10px;
+           }
+           body>div>div{
+               width:500px;
+               height:30px;
+           }
+           .box,.box1,input,img{
+               width:30px;
+               height:30px;
+           }
+           .box,.box1{
+               display:inline-block;
+               margin-right:50px;
+           }
+           .box{
+               position:relative;
+           }
+           input{
+               position:absolute;
+               top:0;
+               left:0;
+               opacity:0;
+           }
+        </style>
+        <script src="../jQuery/jquery-3.4.1.min.js"></script>
+    </head>
+    <body>
+        <div>
+            <canvas class="canvas" width="500" height="500"></canvas>
+            <div>
+                <div class=box><img src="../static/images/upload.png"><input type="file"></div>
+                <div class=box1><img src="../static/images/download.png"></div>
+            </div>
+        </div>
+        <script>
+            let Input=document.querySelector(".box>input");
+            let Box=document.querySelector(".box1");
+            let canvas=document.querySelector("canvas");
+            let canCon=canvas.getContext("2d");
+            let img=new Image();
+            Input.onchange=function(){
+                canCon.clearRect(0,0,500,500);
+                let url=window.URL.createObjectURL(this.files[0]);
+                img.src=url;
+                img.onload=function(){
+                    let w=img.naturalWidth;
+                    let h=img.naturalHeight;
+                    if(w>h){
+                        let newh=h*500/w;
+                        canCon.drawImage(img,0,(500-newh)/2,500,newh);
+                    }
+                    if(h>w){
+                        let neww=w*500/h;
+                        canCon.drawImage(img,(500-neww)/2,0,neww,500);
+                    }
+                    if(h===w){
+                        canCon.drawImage(img,0,0,500,500);
+                    }
+                }
+            }
+            canvas.addEventListener("mousedown",masic);
+            canvas.addEventListener("mousemove",masic);
+            canvas.addEventListener("mouseup",masic);
+            let downtag=false;
+            function masic(ev){
+                ev=ev||window.event;
+                switch(ev.type){
+                    case"mousedown":
+                    downtag=true;
+                    Masic(ev.offsetX,ev.offsetY);
+                    break;
+                    case"mousemove":
+                    if(downtag){
+                        Masic(ev.offsetX,ev.offsetY);
+                    };
+                    break;
+                    case"mouseup":
+                    downtag=false;
+                    break;
+                }
+            }
+            function Masic(x,y){
+                let colordata=Slice(canCon.getImageData(x-4,y-4,8,8).data,4);
+                let len=colordata.length;
+                let r=0,g=0,b=0;
+                for(let i=0;i<len;i++){
+                    r+=colordata[i][0];
+                    g+=colordata[i][1];
+                    b+=colordata[i][2];
+                }
+                canCon.fillStyle=`rgb(${Math.round(r/len)},${Math.round(g/len)},${Math.round(b/len)})`;
+                canCon.fillRect(x-4,y-4,8,8);
+            }
+            function Slice(arr,Len){
+                let arrList=[];
+                let num=parseInt(arr.length/Len);
+                let index=0;
+                for(let i=0;i<num;i++){
+                    arrList.push(arr.slice(index,index+Len));
+                    index+=Len;
+                }
+                return arrList;
+            }
+            Box.onclick=function(){
+                let base64Img=canvas.toDataURL("images/png",1);
+                let A=document.createElement("a");
+                A.href=base64Img;
+                A.download="aaa.png";
+                A.click();
+            };
+        </script>
+    </body>
+</html>
