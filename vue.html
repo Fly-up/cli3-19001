@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+        <title></title>
+        <link rel="stylesheet" 
+            href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" 
+            integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" 
+            crossorigin="anonymous">   
+		<script src="../vue/vue.js"></script>
+    </head>
+<!--    <style>
+        #app>button{
+            width:100px;
+            height:30px;
+            border:1px solid black;
+        }
+        #hidden{
+            position:fixed;
+            top:0;
+            left:0;
+            background-color:#ccc;
+            width:100%;
+            height:100%;
+        }
+        #hidden>.hidden{
+            width:300px;
+            height:300px;
+            background-color:#fff;
+            margin:auto;
+            position:absolute;
+            top:0;
+            left:0;
+            bottom:0;
+            right:0;
+        }
+        #hidden>.hidden>button{
+            width:100px;
+            height:30px;
+            position:absolute;
+            top:0;
+            right:0;
+            border:1px solid black;
+        }
+    </style>
+	<body>
+		<div id="app">
+            <button @click="handleClick">点击弹窗</button>
+            <hidden v-show="isShow" @xxx="close"></hidden>
+        </div>
+        <template id="test">
+            <div id="hidden">
+                <div class="hidden">
+                    <button @click="handleClick">点击关闭</button>
+                </div>
+            </div>
+        </template>
+		<script>
+            let hidden={
+                template:"#test",
+                methods:{
+                    handleClick:function(){
+                        this.$emit("xxx")
+                    }
+                }
+            }
+			let vm=new Vue({
+				el:'#app',
+				data:{
+                    isShow:false
+                },
+                components:{
+                    hidden
+                },
+                methods:{
+                    handleClick:function(){
+                        this.isShow=true;
+                    },
+                    close:function(){
+                        this.isShow=false;
+                    }
+                }
+			})
+        </script>
+        <style>
+        
+        </style>
+	<body>
+        <div id="app" class="container">
+            <div class="row container text-center h1" style="border-bottom:1px solid #ccc">
+                京东购物车
+            </div>
+            <div class="row container" style="border-bottom:1px solid #ccc">
+                <div class="col-md-1">全选<input type="checkbox" v-model="checkAll" @change="checkall"></div>
+                <div class="col-md-2">商品</div>
+                <div class="col-md-2">商品描述</div>
+                <div class="col-md-1">单价</div>
+                <div class="col-md-2">数量</div>
+                <div class="col-md-2">小计</div>
+                <div class="col-md-1">操作</div>
+            </div>
+            <div class="row container" style="border-bottom:1px solid #ccc" v-for="(item,index) of commodity">
+                <div class="col-md-1"><input type="checkbox" v-model="item.check" @change="checkclick"></div>
+                <div class="col-md-2"><img v-bind:src="item.goods" style="width:30%"></div>
+                <div class="col-md-2">{{item.description}}</div>
+                <div class="col-md-1">{{item.price|priceAll(2)}}</div>
+                <div class="col-md-2"><input type="number" style="width:80%" v-model="item.num" min="0"></div>
+                <div class="col-md-2">{{item.price*item.num|priceAll(2)}}</div>
+                <div class="col-md-1"><button class="btn btn-danger" @click="handleClick">删除</button></div>
+            </div>
+            <div class="row">
+                <div class="col-md-1">总价：</div>
+                <div class="col-md-11">{{Num|priceAll(2)}}</div>
+            </div>
+        </div>
+        <script>
+            let vm=new Vue({
+                el:"#app",
+                data:{
+                    checkAll:false,
+                    commodity:[
+                        {
+                            check:false,
+                            goods:"../static/images/bb.jpg",
+                            description:"深入浅出的Node.js",
+                            price:54.5,
+                            num:1
+                        },
+                        {
+                            check:false,
+                            goods:"../static/images/bb.jpg",
+                            description:"深入浅出的Node.js",
+                            price:54.5,
+                            num:1 
+                        }
+                    ]
+                },
+                filters:{
+                    priceAll:function(a,s){
+                        return "￥"+a.toFixed(s)+"元";
+                    }
+                },
+                computed:{
+                    Num:function(){
+                        return this.commodity.reduce(function(total,itme,index){
+                            return total+(itme.check?itme.price*itme.num:0);
+                        },0)
+                    }
+                },
+                methods:{
+                    checkall:function(){
+                        this.commodity.forEach(function(itm,i){
+                            itm.check=vm.checkAll;
+                        })
+                    },
+                    checkclick:function(){
+                        this.checkAll=this.commodity.every(function(itm,i){
+                            return itm.check;
+                        });
+                    },
+                    handleClick:function(x){
+                        this.commodity.splice(x,1);
+                    }
+                }
+            })
+        </script>-->
+    <!--<body>
+        <div id="app" class="container">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h2 class="panel-title">今天还有{{N}}件事没有做</h2>
+                    <input type="text" @keyup.enter="taskkeyup" v-model="thing">
+                </div>
+                <div class="panel-body">
+                    <ul class="list-group">
+                        <li class="list-group-item" v-for="(item,index) of filtertask">
+                            <input type="checkbox" v-model="item.state">
+                            <input type="text" v-model="item.describe">
+                            <button type="button" class="btn btn-danger btn-xs pull-right" @click="deleteClick(index)">X</button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="panel-footer">
+                    <ul class="nav nav-pills">
+                        <li role="presentation" v-bind:class={active:tag==='#all'}><a href="#all">所有任务</a></li>
+                        <li role="presentation" v-bind:class={active:tag==='#finish'}><a href="#finish">已完成</a></li>
+                        <li role="presentation" v-bind:class={active:tag==='#unfinish'}><a href="#unfinish">未完成</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <script>
+            let vm=new Vue({
+                el:"#app",
+                data:{
+                    tag:"#all",
+                    thing:"",
+                    task:[
+                        {
+                            describe:"吃饭",
+                            state:false
+                        },
+                        {
+                            describe:"散步",
+                            state:false
+                        }
+                    ]
+                },
+                methods:{
+                    taskkeyup:function(){
+                        this.task.unshift({
+                            describe:this.thing,
+                            state:false
+                        });
+                        this.thing="";
+                    },
+                    deleteClick:function(index){
+                        this.task.splice(index,1);
+                    }
+                },
+                computed:{
+                    N:function(){
+                        return this.task.filter(function(itm,i){
+                            return itm.state===false;
+                        }).length
+                    },
+                    filtertask:function(){
+                        return this.task.filter((itm,i)=>{
+                            if(this.tag==="#finish")return itm.state===true;
+                            if(this.tag==="#unfinish")return itm.state===false;
+                            if(this.tag==="#all")return this.task;
+                        })
+                    }
+                },
+                created:function(){
+                    window.addEventListener("hashchange",()=>{
+                        this.tag=window.location.hash;
+                    })
+                }
+            })
+        </script>-->
+    <body>
+        <div id="app" class="container">
+            <add @appclick="appclick"></add>
+            <message v-bind:student="student" @deleteclick="deleteclick"></message>
+            <medium v-show="isShow" @deleteclick1="deleteclick1" @deleteclick2="deleteclick2"></medium>
+        </div>
+        <template id="test">
+            <div>
+            <h2 class="text-center">学生管理系统</h2>
+            <form>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">学生姓名</label>
+                    <input type="text" class="form-control" id="exampleInputEmail1" placeholder="请输入学生姓名" v-model="name">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">联系方式</label>
+                    <input type="text" class="form-control" id="exampleInputPassword1" placeholder="请输入联系方式" v-model="tel">
+                </div>
+                <button class="btn btn-default" @click.prevent="addclick(name,tel)">添加学生</button>
+            </form>
+            </div>
+        </template>
+        <template id="test1">
+            <div>
+            <h2 class="text-center">学生信息表</h2>
+            <table class="table">
+                <tbody>
+                    <tr v-for="(item,index) of student" v-if="item.name.length>0&&item.tel.length>0">
+                        <td>{{item.name}}</td>
+                        <td>{{item.tel}}</td>
+                        <td><button type="button" class="btn btn-danger btn-xs" @click="handleClick(index)">X</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+        </template>
+        <template id="test2">
+            <div class="container" style="width:80%">
+                <div class="modal container" tabindex="-1" role="dialog" style="display:block">
+                    <div class="modal-dialog container" role="document">
+                        <div class="modal-content container" style="width:50%">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                                <h4 class="modal-title">你确定要删除吗</h4>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal" @click="handleClick1">取消</button>
+                                <button type="button" class="btn btn-primary" @click="handleClick2">确定</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <script>
+            let add={
+                template:"#test",
+                data:function(){
+                    return {
+                        name:"",
+                        tel:""
+                    }
+                },
+                methods:{
+                    addclick:function(name,tel){
+                        if(name.length>0&&tel.length>0){
+                            student={
+                                name:this.name,
+                                tel:this.tel
+                            };
+                            this.$emit("appclick",student);
+                            this.name="";
+                            this.tel=""
+                        }
+                        
+                    }
+                }
+            }
+            let message={
+                template:"#test1",
+                data:function(){
+                    return {
+
+                    }
+                },
+                props:["student"],
+                methods:{
+                    handleClick:function(index){
+                        this.$emit("deleteclick",index)
+                    }
+                }
+            }
+            let medium={
+                template:"#test2",
+                data:function(){
+                    return {
+                        
+
+                    }
+                },
+                props:[
+
+                ],
+                methods:{
+                    handleClick1:function(){
+                        this.$emit("deleteclick1")
+                    },
+                    handleClick2:function(){
+                        this.$emit("deleteclick2")
+                    }
+                }
+            };
+            let vm=new Vue({
+                el:"#app",
+                data:{
+                    student:[
+                        {
+                            name:"",
+                            tel:""    
+
+                        }
+                    ],
+                    isShow:false,
+                    index:""
+                },
+                components:{
+                    add,
+                    message,
+                    medium
+                },
+                methods:{
+                    appclick:function(student){
+                        this.student.push(student)
+                    },
+                    deleteclick:function(index){
+                        this.isShow=true;
+                        this.index=index;
+                    },
+                    deleteclick1:function(){
+                        this.isShow=false;
+                    },
+                    deleteclick2:function(){
+                        this.isShow=false;
+                        this.student.splice(this.index,1);
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
