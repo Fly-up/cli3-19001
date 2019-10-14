@@ -1,0 +1,408 @@
+<!DOCtype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+        <title>我搭建的网站</title>
+        <meta name="keywords" content="">
+        <meta name="description" content="">
+        <link rel="stylesheet" href="../static/css/reset.css">
+        <style> 
+           
+        </style>
+    </head>
+    <body>
+        <div id=textbox>
+            <div class="item"></div>
+            <div class="text-from-item">
+                <textarea></textarea>
+            </div>
+        </div>
+        
+        <script>
+            let Box=document.getElementById("textbox");
+            let Div=document.querySelector("#textbox>div.item");
+            let textitem=document.querySelector("div.text-from-item");
+
+            //容器样式
+            (function(){
+                Box.style.margin="0 auto";
+                Box.style.overflow="hidden";
+                Box.style.position="relative";
+                Box.style.border="#ccc solid 1px";
+                textitem.style.position="absolute";
+                textitem.style.top="61px";
+                textitem.style.margin="0 auto";
+                textitem.style.overflow="auto";
+            })();
+            function cssbox(){
+                Div.children[0].children[0].value?Box.style.width=Div.children[0].children[0].value:Box.style.width="780px";
+                Div.children[1].children[0].value?Box.style.height=Div.children[1].children[0].value:Box.style.height="500px";
+                textitem.style.width=(parseInt(Box.style.width)+20)+"px";
+                textitem.style.height=textitem.scrollHeight+"px";
+            };
+            
+            //文本域编辑选项
+            (function(){
+                Div.style.width="90%";
+                Div.style.height="60px";
+                Div.style.display="flex";
+                Div.style.flexWrap="wrap";
+                Div.style.justifyContent="space-around";
+                Div.style.alignContent="center";
+                Div.style.backgroundColor="#fff";
+                Div.style.position="absolute";
+                Div.style.top=0;
+                Div.style.zIndex=1;
+                Div.style.borderBottom="#ccc solid 1px";
+                for(let i=0;i<16;i++){
+                    Div.innerHTML+="<p></P>";
+                }
+                let arr=["宽.png","高.png","撤销.png","加粗.png","斜体.png","字体.png","行高.png","首行缩进.png","左对齐.png","右对齐.png","居中对齐.png","超链接.png","图片.png","音频.png","视频.png","表情.png"];
+                arr.forEach(function(itm,index){
+                    Div.children[index].style.backgroundImage=`url("../static/images/${itm}")`;
+                    Div.children[index].style.backgroundSize="22px 22px";
+                    Div.children[index].style.width="22px";
+                    Div.children[index].style.height="22px";
+                })
+                Div.children[5].style.width="46px";
+                Div.children[0].style.width="56px";
+                Div.children[1].style.width="56px";
+                Div.children[6].style.width="46px";
+                Div.children[12].style.position="relative";
+            })();
+
+            //容器宽高，字体，行高触发框样式
+            (function(){
+                Div.children[0].innerHTML="<select><option value='780px'>780</option><option value='500px'>500</option><option value='550px'>550</option><option value='600px'>600</option><option value='650px'>650</option><option value='700px'>750</option><option value='780px'>780</option><option value='800px'>800</option><option value='850px'>850</option><option value='900px'>900</option><option value='950px'>950</option></select>";
+                Div.children[0].children[0].style.width="56px";
+                Div.children[0].children[0].style.height="22px";
+                Div.children[0].children[0].style.borderColor="transparent";
+                Div.children[0].children[0].style.outline="transparent";
+                Div.children[0].children[0].style.fontSize="18px";
+                for(let i=0;i<10;i++){
+                    Div.children[0].children[0].children[i].style.width="56px";
+                    Div.children[0].children[0].children[i].style.height="22px";
+                    Div.children[0].children[0].children[i].style.borderColor="transparent";
+                }
+                Div.children[1].innerHTML="<select><option value='500px'>500</option><option value='300px'>300</option><option value='350px'>350</option><option value='400px'>400</option><option value='450px'>450</option><option value='500px'>500</option><option value='550px'>550</option><option value='600px'>600</option><option value='650px'>650</option><option value='700px'>700</option><option value='750px'>750</option></select>";
+                Div.children[1].children[0].style.width="56px";
+                Div.children[1].children[0].style.height="22px";
+                Div.children[1].children[0].style.borderColor="transparent";
+                Div.children[1].children[0].style.outline="transparent";
+                Div.children[1].children[0].style.fontSize="18px";
+                for(let i=0;i<10;i++){
+                    Div.children[1].children[0].children[i].style.width="56px";
+                    Div.children[1].children[0].children[i].style.height="22px";
+                    Div.children[1].children[0].children[i].style.borderColor="transparent";
+                }
+                Div.children[5].innerHTML="<select><option value='16px'>16</option><option value='12px'>12</option><option value='14px'>14</option><option value='16px'>16</option><option value='18px'>18</option><option value='20px'>20</option><option value='22px'>22</option><option value='24px'>24</option><option value='26px'>26</option><option value='28px'>28</option><option value='30px'>30</option></select>";
+                Div.children[5].children[0].style.width="46px";
+                Div.children[5].children[0].style.height="22px";
+                Div.children[5].children[0].style.borderColor="transparent";
+                Div.children[5].children[0].style.outline="transparent";
+                Div.children[5].children[0].style.fontSize="18px";
+                for(let i=0;i<10;i++){
+                    Div.children[5].children[0].children[i].style.width="46px";
+                    Div.children[5].children[0].children[i].style.height="22px";
+                    Div.children[5].children[0].children[i].style.borderColor="transparent";
+                }
+                Div.children[6].innerHTML="<select><option value='18px'>18</option><option value='14px'>14</option><option value='16px'>16</option><option value='18px'>18</option><option value='20px'>20</option><option value='22px'>22</option><option value='24px'>24</option><option value='26px'>26</option><option value='28px'>28</option><option value='30px'>30</option><option value='32px'>32</option></select>";
+                Div.children[6].children[0].style.width="46px";
+                Div.children[6].children[0].style.height="22px";
+                Div.children[6].children[0].style.borderColor="transparent";
+                Div.children[6].children[0].style.outline="transparent";
+                Div.children[6].children[0].style.fontSize="18px";
+                for(let i=0;i<10;i++){
+                    Div.children[6].children[0].children[i].style.width="46px";
+                    Div.children[6].children[0].children[i].style.height="22px";
+                    Div.children[6].children[0].children[i].style.borderColor="transparent";
+                }
+            })()
+            cssbox();
+
+            //文本域样式
+            function csstext(){
+                let Text=document.querySelectorAll(".text-from-item>textarea");
+                for(let i=0;i<Text.length;i++){ 
+                    Text[i].style.outlineColor="transparent";
+                    Text[i].style.borderColor="transparent";
+                    Text[i].style.marginLeft="4%";
+                    Text[i].style.overflow="auto";
+                    Text[i].style.width="90%"
+                    Text[i].rows="5"; 
+                    Text[Text.length-1].focus();
+                    Text[i].style.resize="none";
+                    Text[i].className="textarea";
+                }    
+            };csstext();
+
+            
+            //文本域触发事件
+            function cssclick(){
+                let Text=document.querySelectorAll(".text-from-item>textarea");
+                for(let i=0;i<Text.length;i++){
+                    Text[i].oninput=function(){
+                        this.style.height="";
+                        fonttext();cssitem();
+                    }
+                    Div.children[3].onclick=function(){
+                        if(!Text[i].style.fontWeight){
+                            Text[i].style.fontWeight="bold";
+                        }else{
+                            Text[i].style.fontWeight="";
+                        }
+                        cssitem();
+                    }
+                    Div.children[4].onclick=function(){
+                        if(!Text[i].style.fontStyle){
+                            Text[i].style.fontStyle="italic";
+                        }else{
+                            Text[i].style.fontStyle="";
+                        }
+                        cssitem();
+                    }
+                    Div.children[7].onclick=function(){
+                        if(!Text[i].style.textIndent||Text[i].style.textIndent===""){
+                            Text[i].style.textIndent="2em";
+                        }else{
+                            Text[i].style.textIndent="";
+                        }
+                        cssitem();
+                    }
+                    Div.children[8].onclick=function(){
+                        if(!Text[i].style.textAlign||Text[i].style.textAlign!="left"){
+                            Text[i].style.textAlign="left";
+                        }else{
+                            Text[i].style.textAlign="";
+                        }
+                        cssitem();
+                    }
+                    Div.children[9].onclick=function(){
+                        if(!Text[i].style.textAlign||Text[i].style.textAlign!="right"){
+                            Text[i].style.textAlign="right";
+                        }else{
+                            Text[i].style.textAlign="";
+                        }
+                        cssitem();
+                    }
+                    Div.children[10].onclick=function(){
+                        if(!Text[i].style.textAlign||Text[i].style.textAlign!="center"){
+                            Text[i].style.textAlign="center";
+                        }else{
+                            Text[i].style.textAlign="";
+                        }
+                        cssitem();
+                    }
+                }
+                Div.children[5].children[0].onchange=function(){
+                    fonttext();cssbox();cssitem();
+                };
+                Div.children[0].children[0].onchange=function(){
+                    cssbox();cssitem();
+                };
+                Div.children[1].children[0].onchange=function(){
+                    cssbox();cssitem();
+                };
+                
+                Div.children[6].children[0].onchange=function(){
+                    fonttext();cssbox();cssitem();
+                }
+            };cssclick();
+
+            //字体与行高渲染
+            function fonttext(){
+                let Text=document.querySelectorAll(".text-from-item>textarea");
+                for(let i=0;i<Text.length;i++){
+                    Div.children[5].children[0].value?Text[i].style.fontSize=Div.children[5].children[0].value:Text[i].style.fontSize="16px";
+                    Div.children[6].children[0].value?Text[i].style.lineHeight=Div.children[6].children[0].value:Text[i].style.lineHeight="18px";
+                    let H=Text[i].scrollHeight;
+                    Text[i].style.height=H-4+"px";
+                }
+            };fonttext();cssbox();
+            
+            //内容区总高度
+            function cssitem(){
+                if(textitem.scrollHeight>=parseInt(Box.style.height)-161){
+                    textitem.style.height=parseInt(Box.style.height)-161+"px";
+                    textitem.scrollTop=textitem.scrollHeight-parseInt(textitem.style.height);
+                }else{
+                    let Hei=0;
+                    if(document.querySelectorAll(".text-from-item>div")){  
+                        for(let j=0;j<textitem.children.length;j++){
+                            if(textitem.children[j].className){
+                                Hei+=textitem.children[j].scrollHeight; 
+                                textitem.style.height=Hei+"px";
+                            }
+                        }
+                    }else{
+                        for(let j=0;j<textitem.children.length;j++){
+                            Hei+=textitem.children[j].scrollHeight;
+                            textitem.style.height=Hei+"px";
+                        }
+                    }
+                }
+            };cssitem();
+            
+
+            //多个图片加载，更换，删除
+            (function(){
+                (function(){
+                    let Input=document.createElement("input");
+                    Div.children[12].appendChild(Input);
+                    let InPut=document.querySelectorAll("#textbox>div.item>p>input");
+                    Input.style.opacity=0;
+                    Input.style.width="22px";
+                    Input.style.height="22px";
+                    Input.style.zIndex="1";
+                    Input.style.position="absolute";
+                    Input.style.top=0;
+                    Input.style.left=0;
+                    Input.type="file";
+                    Input.setAttribute("clicktag","true");
+                })();
+                let i=0,Arr=[];
+                Div.children[12].onclick=function(ev){
+                    ev=ev||window.event;
+                    if(!document.querySelectorAll(".text-from-item>canvas")){
+                        Arr=[];
+                    }else{
+                        Arr=[];
+                        for(let j=0;j<document.querySelectorAll(".text-from-item>canvas").length;j++){
+                            Arr.push(document.querySelectorAll(".text-from-item>canvas")[j].className);
+                        }
+                    }
+                    if(ev.target.getAttribute("clicktag")==="true"){
+                        i++;
+                        Arr.push("Input"+i+"");
+                    }
+                    Arr.forEach(function(itm,index){
+                        document.querySelectorAll("#textbox>div.item>p>input")[index].onchange=function(){
+                            this.className=itm;
+                            if(this.getAttribute("clicktag")==="true"){
+                                let Text=document.querySelectorAll(".text-from-item>textarea");
+                                if(!Text[Text.length-1].value){
+                                    textitem.removeChild(Text[Text.length-1]);
+                                }
+                                let canvas=document.createElement("canvas");
+                                canvas.style.display="block";
+                                textitem.insertBefore(canvas,null);
+                            }
+                            if(this.getAttribute("clicktag")==="true")
+                            document.querySelectorAll(".text-from-item>canvas")[index].className=itm;
+                            let CANVAS=document.querySelector(".text-from-item>."+itm+"");
+                            let canCon=CANVAS.getContext("2d");
+                            let img=new Image();
+                            img.src=window.URL.createObjectURL(this.files[0]);
+                            let W=Math.floor(parseInt(Box.style.width)*0.9);
+                            img.onload=function(){
+                                if(document.querySelector("#textbox>div.item>p>."+itm+"").getAttribute("clicktag")==="false")
+                                canCon.clearRect(0,0,CANVAS.width,CANVAS.height);
+                                let w=img.naturalWidth;
+                                let h=img.naturalHeight;
+                                if(w>=W){
+                                    CANVAS.width=Math.floor(parseInt(Box.style.width)*0.94);
+                                    CANVAS.height=h*(Math.floor(parseInt(Box.style.width)*0.94)/w);
+                                    canCon.drawImage(img,Math.floor(parseInt(Box.style.width)*0.04),0,Math.floor(parseInt(Box.style.width)*0.9),h*Math.floor(parseInt(Box.style.width)*0.9)/w);
+                                }else{
+                                    CANVAS.width=Math.floor(parseInt(Box.style.width)*0.94);
+                                    CANVAS.height=h;
+                                    canCon.drawImage(img,Math.floor(parseInt(Box.style.width)*0.04)+(Math.floor(parseInt(Box.style.width)*0.9)-w)/2,0,w,h);
+                                }
+                                cssitem();
+                                if(document.querySelector("#textbox>div.item>p>."+itm+"").getAttribute("clicktag")==="true"){
+                                    let Input=document.createElement("input");
+                                    Div.children[12].insertBefore(Input,null);
+                                    Input.style.opacity=0;
+                                    Input.style.width="22px";
+                                    Input.style.height="22px";
+                                    Input.style.zIndex="1";
+                                    Input.style.position="absolute";
+                                    Input.style.top=0;
+                                    Input.style.left=0;
+                                    Input.type="file";
+                                    Input.setAttribute("clicktag","true");
+                                    let div=document.createElement("div");
+                                    textitem.insertBefore(div,null);
+                                    div.innerHTML="<p>删除</p><p>更换</p>";
+                                    div.style.width="60px";
+                                    div.style.height="60px";
+                                    div.style.position="fixed";
+                                    div.style.cursor="pointer";
+                                    div.style.left=CANVAS.parentNode.parentNode.offsetLeft+parseInt(Box.style.width)-100+"px";
+                                    div.style.top="200px";
+                                    div.style.display="none";
+                                    div.style.backgroundColor="rgb(149,242,245,0.4)";
+                                    for(let j=0;j<2;j++){
+                                        div.children[j].style.width="60px";
+                                        div.children[j].style.height="30px";
+                                        div.children[j].style.fontSize="16px";
+                                        div.children[j].style.lineHeight="30px";
+                                        div.children[j].style.textAlign="center";
+                                    }
+                                    let Text1=document.createElement("textarea");
+                                    textitem.insertBefore(Text1,null);
+                                    csstext();cssclick();pic();
+                                }
+                                document.querySelector("#textbox>div.item>p>."+itm+"").style.display="none";
+                                document.querySelector("#textbox>div.item>p>."+itm+"").setAttribute("clicktag","false");
+                            }   
+                        }
+                    })
+                }
+           })();
+           function pic(){
+                if(document.querySelectorAll("div.text-from-item>canvas")){
+                    let CANVAS=document.querySelectorAll("div.text-from-item>canvas");
+                    let DIV=document.querySelectorAll("div.text-from-item>div");
+                    for(let i=0;i<CANVAS.length;i++){
+                        CANVAS[i].onclick=function(){
+                            function cssDIV(){
+                                document.querySelector("#textbox>div.item>p>."+CANVAS[i].className+"").style.display="none";
+                                document.querySelector("#textbox>div.item>p>."+CANVAS[i].className+"").style.zIndex="1";
+                                DIV[i].style.display="none";
+                            };
+                            if(DIV[i].style.display==="none"){
+                                DIV[i].style.display="block";
+                                document.querySelector("#textbox>div.item>p>."+this.className+"").style.display="block";
+                                document.querySelector("#textbox>div.item>p>."+this.className+"").style.zIndex="2";
+                                timer=setTimeout(function(){
+                                    cssDIV();
+                                },5000)
+                                textitem.onscroll=function(){
+                                    cssDIV();
+                                }
+                                DIV[i].children[0].onclick=function(){
+                                    textitem.removeChild(DIV[i]);
+                                    textitem.removeChild(CANVAS[i]);
+                                    Div.children[12].removeChild(document.querySelector("#textbox>div.item>p>."+CANVAS[i].className+""));
+                                    clearTimeout(timer);
+                                    textitem.onscroll=null;
+                                    for(let j=0;j<textitem.children.length;j++){
+                                        if(textitem.children[j].nodeName==="TEXTAREA"&&textitem.children[j+1].nodeName==="TEXTAREA"){
+                                            textitem.children[j].value+=textitem.children[j+1].value;
+                                            textitem.removeChild(textitem.children[j+1]);
+                                        }
+                                    }
+                                    csstext();cssitem();
+                                };
+                                DIV[i].children[1].onclick=function(){
+                                    document.querySelector("#textbox>div.item>p>."+CANVAS[i].className+"").click();
+                                }
+                            }else{
+                                cssDIV();
+                            }
+                        }
+                    }
+                }
+            };pic();
+
+
+            //音频加载事件
+
+            //视频加载事件
+
+
+        </script>
+    </body>
+</html>
