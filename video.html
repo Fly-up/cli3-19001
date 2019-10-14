@@ -1,0 +1,486 @@
+<!DOCtype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+        <title>我搭建的网站</title>
+        <meta name="keywords" content="">
+        <meta name="description" content="">
+        <style>
+            div,p,h1,h2,h3,h4,h5.h6,ul,ol,li,a,body,input,img
+            {
+                margin:0;
+                padding:0;
+                list-style-type:none;
+                font-weight:normal;
+                text-decoration:none;
+                font-size:16px;
+                line-height:normal;
+                outline:none;
+                color:#000;
+            }
+            .clearfix::after
+            {
+                display:block;
+                content:".";
+                font-size:0;
+                overflow:hidden;
+                height:0;
+                clear:both;
+            }
+            html,body
+            {
+                width:100%;
+                height:100%;
+            }
+
+
+            #video{
+                max-width:1200px;
+                max-height:760px;
+                min-width:800px;
+                min-height:500px;
+                position:relative;
+                margin:20px auto;
+            }
+            #video>h2{
+                width:100%;
+                height:8%;
+                text-align:center;
+                font-weight:bold;
+                background-color:#ccc;
+            }
+            #video>video{
+                width:100%;
+                height:92%;
+                background-image:url("./images/item.png");
+            }
+            #video>.controls{
+                width:100%;
+                height:12%;
+                background-color:transparent;
+                display:flex;
+                justify-content:space-around;
+                align-items:center;
+                position:absolute;
+                left:0;
+                bottom:8px; 
+            }
+            #video>.controls .playbox{
+                height:100%;
+            }
+            #video>.controls .playbox>ul{
+                width:100%;
+                height:100%;
+                display:flex;
+                justify-content:space-around;
+                align-items:center;
+            }
+            #video>.controls .playbox .play,
+            #video>.controls .playbox .loopplay,
+            #video>.controls .playbox .time,
+            #video>.controls .upload,
+            #video>.controls .forward,
+            #video>.controls .screen,
+            #video>.controls .rewind,
+            #video>.controls .volume{
+                height:45%;
+            }
+            #video>.controls .playbox .loopplay{
+                text-align:center;
+                color:#fff;
+            }
+            #video>.controls .playbox .time>ul{
+                height:100%;
+                display:flex;
+                justify-content:space-around;
+                align-items:center;
+            }
+            #video>.controls .playbox .time>ul>li{
+                height:100%;
+                text-align:center;
+                color:#fff;
+            }
+            #video>.controls .upload>input{
+                width:100%;
+                height:100%;
+                opacity:0;
+            }
+            #video>.controls .Progress-bar{
+                width:30%;
+                height:12px;
+                border-radius:6px;
+                background-color:#ccc;
+                overflow:hidden;
+            }
+            #video>.controls .Progress-bar>p{
+                height:12px;
+                width:0;
+                background-color:rgb(163, 150, 179);
+            }
+            #video>.controls .wardbox{
+                width:30%;
+                height:100%;
+            }
+            #video>.controls .wardbox>ul{
+                width:100%;
+                height:100%;
+                display:flex;
+                justify-content:space-around;
+                align-items:center;
+            }
+            #video>.controls .volume{
+                position:relative;
+            }
+            .volumeValue{
+                width:10px;
+                height:100px;
+                position:absolute;
+                right:45%;
+                top:-120px;
+                border-radius:5px;
+                display:none;
+                background-color:#ccc;
+                overflow:hidden;
+            } 
+            .volumeValue>p{
+                width:10px;
+                height:0;
+                position:absolute;
+                bottom:0;
+                background-color:rgb(163, 150, 179); 
+                background-repeat:no
+            }               
+        </style>
+    </head>
+    <body>
+        <div id="video">
+            <h2>我的播放器</h2>
+            <video src="" controls poster=""></video>
+            <ul class="controls">
+                <li class="playbox">
+                    <ul>
+                        <li class="play"></li>
+                        <li class="loopplay">1</li>
+                        <li class="time">
+                            <ul>
+                                <li>0</li>
+                                <li>0</li>
+                                <li>/</li>
+                                <li>0</li>
+                                <li>0</li>
+                            </ul>
+                        </li>
+                        <li class="rewind"></li>
+                    </ul>
+                </li>
+                <li class="Progress-bar"><p></p></li>
+                <li class="wardbox">
+                    <ul>
+                        <li class="forward"></li>
+                        <li class="volume">
+                            <div class="volumeValue"><p></p></div>
+                        </li>
+                        <li class="screen"></li>
+                        <li class="upload"><input type="file"></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <script>
+
+        //获取节点，定义全局变量
+
+            let Vol=document.querySelector(".volume");
+            let volumeValue=document.querySelector(".volumeValue");
+            let UPload=document.querySelector(".upload");
+            let upload=document.querySelector(".upload>input");
+            let videoFile=document.querySelector("#video>video");
+            let ProgressBar=document.querySelector(".Progress-bar");
+            let H=document.querySelector("#video>h2");
+            let playBox=document.querySelector(".playbox");
+            let Play=document.querySelector(".playbox .play");
+            let P1=document.querySelector(".Progress-bar>p");
+            let P2=document.querySelector(".volumeValue>p");
+            let Forward=document.querySelector(".forward");
+            let Rewind=document.querySelector(".rewind");
+            let Screen=document.querySelector(".screen");
+            let wardBox=document.querySelector(".wardbox");
+            let Loopplay=document.querySelector(".loopplay");
+            let Timeul=document.querySelector(".time>ul");
+            let playTag,videoTag,volumeTag,playProgress,volumeProgress,
+                Progressbarw,volumeValueh,ScreenTag,aRR,TimeLilen=0,num=0;
+
+        //隐藏原生播放控件
+
+            videoFile.controls=false;
+
+        //容器初始样式
+
+            function videocss(){
+                playBox.style.width=document.querySelector("#video").scrollWidth-ProgressBar.scrollWidth-wardBox.scrollWidth+"px";
+                H.style.lineHeight=document.querySelector("#video").scrollHeight*0.08+"px";
+                H.style.fontSize=parseInt(H.style.lineHeight)*0.5+'px';
+                Loopplay.style.lineHeight=Loopplay.scrollHeight+"px";
+                Loopplay.style.width=Loopplay.scrollHeight+4+"px";
+                Loopplay.style.fontSize=Loopplay.scrollHeight*0.4+"px";
+                let ARR=[
+                    [Play,'./images/暂停键.png'],
+                    [Loopplay,'./images/循环播放.png'],
+                    [Forward,'./images/快进.png'],
+                    [Screen,'./images/全屏.png'],
+                    [Rewind,'./images/快退.png'],
+                    [Vol,'./images/音量键.png'],
+                    [UPload,'./images/上传.png']
+                ];
+                ARR.forEach(function(itm,i){
+                    let HEIght=itm[0].scrollHeight+4+"px";
+                    itm[0].style.width=HEIght;
+                    itm[0].style.backgroundImage=`url(${itm[1]})`;
+                    itm[0].style.backgroundSize="cover";
+                    itm[0].style.backgroundRepeat="no-repeat";
+                    itm[0].style.backgroundPosition="center";
+                });
+            };videocss();
+
+        //视频加载
+
+            upload.onchange=function(){
+                let url=window.URL.createObjectURL(this.files[0]);
+                videoFile.setAttribute("src",url);
+                function uploadcss(){
+                    if(videoFile.videoWidth>800){
+                        videoFile.width="800px";
+                        videoFile.height=videoFile.videoHeight*(800/videoFile.videoWidth)+"px";
+                    }else{
+                        videoFile.width=videoFile.videoWidth;
+                        videoFile.height=videoFile.videoHeight;
+                    }
+                    document.querySelector("#video").style.width=videoFile.width+"px";
+                    document.querySelector("#video").style.height=Math.floor(videoFile.height/0.9)+"px";
+                };uploadcss();videocss();
+                H.innerText=this.files[0].name.split(".")[0];
+                volumeTag=true;
+                playTag=false;
+                videoTag=true;
+                ScreenTag=false;
+                Play.style.backgroundImage="url('./images/播放键.png')";
+                function volumecss(){
+                    videoFile.volume=0.7;
+                    P2.style.height=videoFile.volume*100+"px";
+                    P2.style.backgroundSize=`10px ${videoFile.volume*100}px`;
+                };volumecss();
+    
+            //全屏关与闭
+
+                Screen.onclick=function(){
+                    if(!ScreenTag){
+                        document.querySelector("#video").style.width=document.documentElement.clientWidth+"px";
+                        document.querySelector("#video").style.height=document.documentElement.clientHeight+"px";
+                        videocss();
+                        this.style.backgroundImage="url('./images/全屏退出.png')";
+                        ScreenTag=true;
+                    }else{
+                        document.querySelector("#video").style.width=videoFile.videoWidth+"px";
+                        document.querySelector("#video").style.height=Math.floor(videoFile.videoHeight/0.9)+"px";
+                        videocss();
+                        this.style.backgroundImage="url('./images/全屏.png')";
+                        ScreenTag=false;
+                    }
+                }
+
+            //音量开关，拖拽调节音量大小
+
+                function volumeTime(ev=window.event){
+                    volumeProgress=1-ev.offsetY/volumeValue.clientHeight;
+                    videoFile.volume=volumeProgress;
+                    volumeValueh=Math.floor(100*volumeProgress);
+                    P2.style.height=`${volumeValueh}px`;
+                    P2.style.backgroundSize=`10px ${volumeValueh}px`;
+                }
+                volumeValue.onclick=function(ev=window.event){
+                    ev.stopPropagation();
+                }
+                volumeValue.onmousedown=function(ev=window.event){
+                    ev.stopPropagation();
+                    if(videoTag){
+                        volumeTime();    
+                        volumeValue.onmousemove=function(ev=window.event){
+                            ev.stopPropagation();
+                            volumeTime();
+                        }
+                    }
+                }
+                document.onmouseup=function(){
+                    volumeValue.onmousemove=null;
+                }
+                Vol.onclick=function(){
+                    if(volumeTag){
+                        this.style.backgroundImage="url('./images/音量关闭.png')";
+                        videoFile.volume=0;
+                        P2.style.height=0;
+                        P2.style.backgroundSize="10px 0";
+                        volumeValue.style.display="none";
+                        volumeTag=false;
+                        Vol.onmouseenter=null;
+                    }else{
+                        this.style.backgroundImage="url('./images/音量键.png')";
+                        volumeValue.style.display="block";
+                        volumeTag=true;
+                        volumecss(); 
+                    }
+                } 
+
+            //音量条显示、隐藏
+
+                if(volumeTag){    
+                    Vol.onmouseenter=function(){ 
+                        if(getComputedStyle(volumeValue).display==="none"||volumeValue.style.display==="none"){
+                            volumeValue.style.display="block";
+                            timer=setTimeout(function(){
+                                volumeValue.style.display="none";
+                            },6000);
+                        }
+                    }
+                }
+
+            //视频播放与暂停
+
+                Play.onclick=function(){
+                    if(videoTag){
+                        if(playTag){
+                            videoFile.pause();
+                            playTag=false;
+                            Play.style.backgroundImage="url('./images/播放键.png')";
+                        }else{
+                            videoFile.play();
+                            playTag=true;
+                            Play.style.backgroundImage="url('./images/暂停键.png')";
+                        }
+                    }
+                }
+
+        //播放进度时钟    
+
+                function playTime(){
+                    Hour=Math.floor(videoFile.currentTime/60/60);
+                    Minute=Math.floor(videoFile.currentTime/60-Hour*60);
+                    Second=Math.floor(videoFile.currentTime-Minute*60-Hour*60*60);
+                    hour=Math.floor(videoFile.duration/60/60);
+                    minute=Math.floor(videoFile.duration/60-Hour*60);
+                    second=Math.floor(videoFile.duration-Minute*60-Hour*60*60);
+                    let x=":",y="/";
+                    let arr=[
+                        Math.floor(Hour/10),Hour-Math.floor(Hour/10)*10,
+                        x,
+                        Math.floor(Minute/10),Minute-Math.floor(Minute/10)*10,
+                        x,
+                        Math.floor(Second/10),Second-Math.floor(Second/10)*10,
+                        y,
+                        Math.floor(hour/10),hour-Math.floor(hour/10)*10,
+                        x,
+                        Math.floor(minute/10),minute-Math.floor(minute/10)*10,
+                        x,
+                        Math.floor(second/10),second-Math.floor(second/10)*10
+                        ];
+                    let Arr=[
+                        Math.floor(Minute/10),Minute-Math.floor(Minute/10)*10,
+                        x,
+                        Math.floor(Second/10),Second-Math.floor(Second/10)*10,
+                        y,
+                        Math.floor(minute/10),minute-Math.floor(minute/10)*10,
+                        x,
+                        Math.floor(second/10),second-Math.floor(second/10)*10
+                    ];
+                    let ARr=[
+                        Math.floor(Second/10),Second-Math.floor(Second/10)*10,
+                        y,
+                        Math.floor(second/10),second-Math.floor(second/10)*10
+                    ];
+                    if(videoFile.duration>=3600)aRR=arr;
+                    if(3600>videoFile.duration>=60)aRR=Arr;
+                    if(60>videoFile.duration>0)aRR=ARr;
+                    Timeul.innerHTML="";
+                    aRR.forEach(function(itm,i){
+                        num++;
+                        if(num<=aRR.length){
+                            TimeLilen+=(TimeLi[i].scrollHeight*0.4);
+                            Timeul.style.width=TimeLilen+'px';
+                        }
+                        Timeul.innerHTML+="<li></li>";
+                        let TimeLi=document.querySelectorAll(".time>ul>li");    
+                        TimeLi[i].style.fontSize=TimeLi[i].scrollHeight*0.6+"px";
+                        TimeLi[i].style.width=TimeLi[i].scrollHeight*0.4+"px";
+                        TimeLi[i].style.lineHeight=TimeLi[i].scrollHeight+'px';    
+                        TimeLi[i].innerText=itm;
+                    })
+                };       
+
+        //播放进度点击拖拽调节,快进，快退
+
+                function Progressbarcss(){
+                    Progressbarw=Math.floor(ProgressBar.scrollWidth*playProgress);
+                    P1.style.width=`${Progressbarw}px`;
+                    P1.style.backgroundSize=`${Progressbarw}px 14px`;
+                }
+                videoFile.addEventListener("timeupdate",function(){
+                    if(this.currentTime){
+                        let nowTime=this.currentTime;
+                        let totalTime=this.duration;
+                        if(nowTime===totalTime){
+                            videoFile.pause();
+                            playTag=false;
+                            this.currentTime=0;
+                            P1.style.width=0;
+                            P1.style.backgroundSize="0 14px";
+                            Play.style.backgroundImage="url('./images/播放键.png')";
+                        }
+                        playProgress=nowTime/totalTime;
+                        Progressbarcss();playTime();
+                    }
+                })
+                function ProgressTime(ev=window.event){
+                    playProgress=ev.offsetX/ProgressBar.clientWidth;
+                    videoFile.currentTime=playProgress*videoFile.duration;
+                }
+                ProgressBar.onmousedown=function(ev=window.event){
+                    if(playTag){
+                        ProgressTime();Progressbarcss();    
+                        ProgressBar.onmousemove=function(ev=window.event){
+                            ProgressTime();Progressbarcss();
+                        }
+                    }
+                }
+                ProgressBar.onmouseup=function(){
+                    ProgressBar.onmousemove=null;
+                }
+                Rewind.onmousedown=function(){
+                    let nowTime=videoFile.currentTime;
+                    let totalTime=videoFile.duration;
+                    nowTime-=5;
+                    if(nowTime<0)nowTime=0;
+                    videoFile.currentTime=nowTime;
+                    playProgress=nowTime/totalTime;
+                    Progressbarcss();
+                }
+                Forward.onmousedown=function(){
+                    let nowTime=videoFile.currentTime;
+                    let totalTime=videoFile.duration;
+                    nowTime+=5;
+                    if(nowTime>totalTime)nowTime=totalTime;
+                    videoFile.currentTime=nowTime;
+                    playProgress=nowTime/totalTime;
+                    Progressbarcss();
+                }
+
+        //循环播放
+
+                Loopplay.onclick=function(){
+                    videoFile.currentTime=0;
+                    P1.style.width=0; 
+                    P1.style.backgroundSize="0 14px"; 
+                }
+            }    
+        </script>
+    </body>
+</html>
