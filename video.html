@@ -32,14 +32,12 @@
             {
                 width:100%;
                 height:100%;
+                -webkit-user-select:none;
             }
 
 
             #video{
-                width:80%;
-                max-height:80%;
                 position:relative;
-                margin:4% auto;
                 background-image:url("./images/tbfjkttm.jpg");
                 background-size:"cover";
                 background-repeat:"no-repeat";
@@ -52,10 +50,6 @@
                 font-weight:bold;
                 color:#fff;
             }
-            #video>video{
-                width:100%;
-                height:92%;
-            }
             #video>.controls{
                 width:100%;
                 height:12%;
@@ -66,7 +60,7 @@
                 align-items:center;
                 position:absolute;
                 left:0;
-                bottom:8px; 
+                bottom:2px; 
             }
             #video>.controls .playbox{
                 height:100%;
@@ -213,12 +207,25 @@
 
             videoFile.controls=false;
 
-        //容器初始样式
+        //容器初始样式以及响应式布局
 
             function videocss(){
-                H.style.lineHeight=video.scrollHeight*0.1+"px";
-                H.style.fontSize=parseInt(H.style.lineHeight)*0.4+'px';
+                if(!videoTag&&!ScreenTag){
+                    if(document.documentElement.clientWidth>=768){
+                        video.style.width=document.documentElement.clientWidth*0.6+"px";
+                        video.style.height=document.documentElement.clientWidth*0.6*0.6+"px";
+                    }else{
+                        video.style.width=document.documentElement.clientWidth*0.8+"px";
+                        video.style.height=document.documentElement.clientWidth*0.8*0.6+"px";
+                    }   
+                }else{
+                    video.style.width=videoFile.style.width;
+                    video.style.height=parseInt(videoFile.style.height)/0.9+"px";
+                }
                 if(document.documentElement.clientWidth<450){
+                    video.style.margin="2% auto";
+                    H.style.lineHeight=video.scrollHeight*0.05+"px";
+                    H.style.fontSize=parseInt(H.style.lineHeight)*0.2+'px';
                     document.querySelector(".controls").style.height=video.scrollHeight*0.16+"px";
                     ProgressBar.style.width=video.scrollWidth*0.45+"px";
                     wardBox.style.width=video.scrollWidth*0.25+"px";
@@ -227,20 +234,27 @@
                     volumeValue.style.width="6px";
                 }else{
                     if(document.documentElement.clientWidth<768){
+                        video.style.margin="2% auto";
                         document.querySelector(".controls").style.height=video.scrollHeight*0.14+"px";
                         ProgressBar.style.height="8px";
                         volumeValue.style.width="6px";
+                        H.style.lineHeight=video.scrollHeight*0.05+"px";
+                        H.style.fontSize=parseInt(H.style.lineHeight)*0.2+'px';
                     }
+                    video.style.margin="4% auto";
                     document.querySelector(".controls").style.height=video.scrollHeight*0.12+"px";
                     ProgressBar.style.width=video.scrollWidth*0.3+"px";
                     wardBox.style.width=video.scrollWidth*0.3+"px";
                     playBox.style.width=video.scrollWidth*0.3+"px";
                     ProgressBar.style.height="12px";
                     volumeValue.style.width="10px";
+                    H.style.lineHeight=video.scrollHeight*0.1+"px";
+                    H.style.fontSize=parseInt(H.style.lineHeight)*0.4+'px';
                 }
                 let TimeLi=document.querySelectorAll(".time>ul>li");
                 for(let i=0;i<TimeLi.length;i++){
                     if(document.documentElement.clientWidth<450){
+                        TimeLi[i].style.width=0;
                         TimeLi[i].style.display="none";
                     }else{
                         TimeLi[i].style.display="block";
@@ -286,6 +300,18 @@
                 });
             };videocss();
             window.onresize=function(){
+                if(document.documentElement.clientWidth<videoFile.videoWidth){
+                    if(videoFile.scrollHeight>document.documentElement.clientHeight){
+                        videoFile.style.height=document.documentElement.clientHeight+"px";
+                        videoFile.height=document.documentElement.clientHeight;
+                        videoFile.style.width=(document.documentElement.clientHeight/videoFile.height)*videoFile.videoWidth+"px";
+                        videoFile.width=(document.documentElement.clientHeight/videoFile.height)*videoFile.videoWidth;
+                    }
+                    videoFile.style.width=document.documentElement.clientWidth+"px";
+                    videoFile.width=document.documentElement.clientWidth;
+                    videoFile.style.height=(document.documentElement.clientWidth/videoFile.videoWidth)*videoFile.videoHeight+"px";
+                    videoFile.height=(document.documentElement.clientWidth/videoFile.videoWidth)*videoFile.videoHeight;
+                }
                 videocss(); 
             }
 
@@ -294,16 +320,123 @@
             upload.onchange=function(){
                 let url=window.URL.createObjectURL(this.files[0]);
                 videoFile.setAttribute("src",url);
-                if(videoFile.videoWidth>document.documentElement.clientWidth*0.8){
-                    videoFile.width=document.documentElement.clientWidth*0.8;
-                    videoFile.height=videoFile.videoHeight*(document.documentElement.clientWidth*0.8/videoFile.videoWidth);
-                }else{
-                    videoFile.width=videoFile.videoWidth;
-                    videoFile.height=videoFile.videoHeight;
-                }
-                video.style.width=videoFile.width+"px";
-                video.style.height=videoFile.height/0.92+"px";
-                videocss();
+
+        //播放进度时钟 
+
+                function playTime(){
+                    Hour=Math.floor(videoFile.currentTime/60/60);
+                    Minute=Math.floor(videoFile.currentTime/60-Hour*60);
+                    Second=Math.floor(videoFile.currentTime-Minute*60-Hour*60*60);
+                    hour=Math.floor(videoFile.duration/60/60);
+                    minute=Math.floor(videoFile.duration/60-Hour*60);
+                    second=Math.floor(videoFile.duration-Minute*60-Hour*60*60);
+                    let x=":",y="/";
+                    let arr=[
+                        Math.floor(Hour/10),Hour-Math.floor(Hour/10)*10,
+                        x,
+                        Math.floor(Minute/10),Minute-Math.floor(Minute/10)*10,
+                        x,
+                        Math.floor(Second/10),Second-Math.floor(Second/10)*10,
+                        y,
+                        Math.floor(hour/10),hour-Math.floor(hour/10)*10,
+                        x,
+                        Math.floor(minute/10),minute-Math.floor(minute/10)*10,
+                        x,
+                        Math.floor(second/10),second-Math.floor(second/10)*10
+                        ];
+                    let Arr=[
+                        Math.floor(Minute/10),Minute-Math.floor(Minute/10)*10,
+                        x,
+                        Math.floor(Second/10),Second-Math.floor(Second/10)*10,
+                        y,
+                        Math.floor(minute/10),minute-Math.floor(minute/10)*10,
+                        x,
+                        Math.floor(second/10),second-Math.floor(second/10)*10
+                    ];
+                    let ARr=[
+                        Math.floor(Second/10),Second-Math.floor(Second/10)*10,
+                        y,
+                        Math.floor(second/10),second-Math.floor(second/10)*10
+                    ];
+                    if(videoFile.duration>=3600)aRR=arr;
+                    if(3600>videoFile.duration>=60)aRR=Arr;
+                    if(60>videoFile.duration>0)aRR=ARr;
+                    Timeul.innerHTML="";
+                    aRR.forEach(function(itm,i){
+                        num++;
+                        Timeul.innerHTML+="<li></li>";
+                        let TimeLi=document.querySelectorAll(".time>ul>li"); 
+                        if(document.documentElement.clientWidth<450){
+                            TimeLi[i].style.width=0;
+                            TimeLi[i].style.display="none";
+                        }else{
+                            TimeLi[i].style.display="block";
+                            TimeLi[i].style.fontSize=TimeLi[i].scrollHeight*0.6+"px";
+                            TimeLi[i].style.width=TimeLi[i].scrollHeight*0.4+"px";
+                            TimeLi[i].style.lineHeight=TimeLi[i].scrollHeight+'px';
+                        }     
+                        TimeLi[i].innerText=itm;
+                        if(num<=aRR.length){
+                            TimeLilen+=(TimeLi[i].scrollHeight*0.4);
+                            Timeul.style.width=TimeLilen+'px';
+                        }
+                    })
+                };
+        
+        //视频加载成功执行
+
+                setTimeout(function(){
+                    if(document.documentElement.clientWidth>=document.documentElement.clientHeight){
+                        if(videoFile.videoWidth>videoFile.videoHeight){
+                            if(videoFile.videoWidth>document.documentElement.clientWidth*0.6){
+                                videoFile.style.width=document.documentElement.clientWidth*0.6+"px";
+                                videoFile.width=document.documentElement.clientWidth*0.6;
+                                videoFile.style.height=videoFile.videoHeight*(document.documentElement.clientWidth*0.6/videoFile.videoWidth)+"px";
+                                videoFile.height=videoFile.videoHeight*(document.documentElement.clientWidth*0.6/videoFile.videoWidth);
+                            }else{
+                                videoFile.style.width=videoFile.videoWidth+"px";
+                                videoFile.width=videoFile.videoWidth;
+                                videoFile.style.height=videoFile.videoHeight+"px";
+                                videoFile.height=videoFile.videoHeight;
+                            }
+                            if(videoFile.videoHeight>document.documentElement.clientHeight){
+                                videoFile.style.height=document.documentElement.clientHeight+"px";
+                                videoFile.height=document.documentElement.clientHeight;
+                                videoFile.style.width=(document.documentElement.clientHeight/videoFile.height)*videoFile.videoWidth+"px";
+                                videoFile.width=(document.documentElement.clientHeight/videoFile.height)*videoFile.videoWidth;
+                            }
+                        }else{
+                            if(videoFile.videoHeight>document.documentElement.clientHeight*0.6){
+                                videoFile.style.height=document.documentElement.clientHeight*0.6+"px";
+                                videoFile.height=document.documentElement.clientHeight*0.6;
+                                videoFile.style.width=videoFile.videoWidth*(document.documentElement.clientHeight*0.6/videoFile.videoHeight)+"px";
+                                videoFile.width=videoFile.videoWidth*(document.documentElement.clientHeight*0.6/videoFile.videoHeight);
+                            }else{
+                                videoFile.style.width=videoFile.videoWidth+"px";
+                                videoFile.width=videoFile.videoWidth;
+                                videoFile.style.height=videoFile.videoHeight+"px";
+                                videoFile.height=videoFile.videoHeight;
+                            }
+                        }
+                        if(videoFile.videoHeight>document.documentElement.clientHeight){
+                            videoFile.style.height=document.documentElement.clientHeight+"px";
+                            videoFile.height=document.documentElement.clientHeight;
+                            videoFile.style.width=(document.documentElement.clientHeight/videoFile.height)*videoFile.videoWidth+"px";
+                            videoFile.width=(document.documentElement.clientHeight/videoFile.height)*videoFile.videoWidth;
+                        }else{
+                            videoFile.style.width=videoFile.videoWidth+"px";
+                            videoFile.width=videoFile.videoWidth;
+                            videoFile.style.height=videoFile.videoHeight+"px";
+                            videoFile.height=videoFile.videoHeight;
+                        }
+                    }else{
+                        videoFile.style.width=document.documentElement.clientWidth+"px";
+                        videoFile.width=document.documentElement.clientWidth;
+                        videoFile.style.height=(document.documentElement.clientWidth/videoFile.videoWidth)*videoFile.videoHeight+"px";
+                        videoFile.height=(document.documentElement.clientWidth/videoFile.videoWidth)*videoFile.videoHeight;
+                    }
+                    videocss();playTime();
+                },350);
                 H.innerText=this.files[0].name.split(".")[0];
                 volumeTag=true;
                 playTag=false;
@@ -320,17 +453,34 @@
 
                 Screen.onclick=function(){
                     if(!ScreenTag){
-                        video.style.width=document.documentElement.clientWidth+"px";
-                        video.style.height=document.documentElement.clientHeight+"px";
+                        ScreenTag=true;
+                        if(videoFile.videoWidth>videoFile.videoHeight){
+                            if(videoFile.scrollWidth>document.documentElement.clientWidth){
+                                videoFile.style.width=document.documentElement.clientWidth+"px";
+                                videoFile.width=document.documentElement.clientWidth;
+                                videoFile.style.height=(document.documentElement.clientWidth/videoFile.videoWidth)*videoFile.videoHeight+"px";
+                                videoFile.height=(document.documentElement.clientWidth/videoFile.videoWidth)*videoFile.videoHeight;
+                            }else{
+                                videoFile.style.width=videoFile.videoWidth+"px";
+                                videoFile.width=videoFile.videoWidth;
+                                videoFile.style.height=videoFile.videoHeight+"px";
+                                videoFile.height=videoFile.videoHeight;
+                            }
+                        }else{
+                            videoFile.style.height=document.documentElement.clientHeight+"px";
+                            videoFile.height=document.documentElement.clientHeight;
+                            videoFile.style.width=(document.documentElement.clientHeight/videoFile.height)*videoFile.videoWidth+"px";
+                            videoFile.width=(document.documentElement.clientHeight/videoFile.height)*videoFile.videoWidth;
+                        }
                         videocss();
                         this.style.backgroundImage="url('./images/全屏退出.png')";
-                        ScreenTag=true;
                     }else{
-                        video.style.width=videoFile.videoWidth+"px";
-                        video.style.height=Math.floor(videoFile.videoHeight/0.92)+"px";
-                        videocss();
-                        this.style.backgroundImage="url('./images/全屏.png')";
                         ScreenTag=false;
+                        videoFile.style.width=document.documentElement.clientWidth*0.6+"px";
+                        videoFile.width=document.documentElement.clientWidth*0.6;
+                        videoFile.style.height=document.documentElement.clientWidth*0.6*(videoFile.videoHeight/videoFile.videoWidth)+"px";
+                        videoFile.height=document.documentElement.clientWidth*0.6*(videoFile.videoHeight/videoFile.videoWidth);
+                        videocss();
                     }
                 }
 
@@ -404,63 +554,7 @@
                         }
                     }
                 }
-
-        //播放进度时钟    
-
-                function playTime(){
-                    Hour=Math.floor(videoFile.currentTime/60/60);
-                    Minute=Math.floor(videoFile.currentTime/60-Hour*60);
-                    Second=Math.floor(videoFile.currentTime-Minute*60-Hour*60*60);
-                    hour=Math.floor(videoFile.duration/60/60);
-                    minute=Math.floor(videoFile.duration/60-Hour*60);
-                    second=Math.floor(videoFile.duration-Minute*60-Hour*60*60);
-                    let x=":",y="/";
-                    let arr=[
-                        Math.floor(Hour/10),Hour-Math.floor(Hour/10)*10,
-                        x,
-                        Math.floor(Minute/10),Minute-Math.floor(Minute/10)*10,
-                        x,
-                        Math.floor(Second/10),Second-Math.floor(Second/10)*10,
-                        y,
-                        Math.floor(hour/10),hour-Math.floor(hour/10)*10,
-                        x,
-                        Math.floor(minute/10),minute-Math.floor(minute/10)*10,
-                        x,
-                        Math.floor(second/10),second-Math.floor(second/10)*10
-                        ];
-                    let Arr=[
-                        Math.floor(Minute/10),Minute-Math.floor(Minute/10)*10,
-                        x,
-                        Math.floor(Second/10),Second-Math.floor(Second/10)*10,
-                        y,
-                        Math.floor(minute/10),minute-Math.floor(minute/10)*10,
-                        x,
-                        Math.floor(second/10),second-Math.floor(second/10)*10
-                    ];
-                    let ARr=[
-                        Math.floor(Second/10),Second-Math.floor(Second/10)*10,
-                        y,
-                        Math.floor(second/10),second-Math.floor(second/10)*10
-                    ];
-                    if(videoFile.duration>=3600)aRR=arr;
-                    if(3600>videoFile.duration>=60)aRR=Arr;
-                    if(60>videoFile.duration>0)aRR=ARr;
-                    Timeul.innerHTML="";
-                    aRR.forEach(function(itm,i){
-                        num++;
-                        Timeul.innerHTML+="<li></li>";
-                        let TimeLi=document.querySelectorAll(".time>ul>li");    
-                        TimeLi[i].style.fontSize=TimeLi[i].scrollHeight*0.6+"px";
-                        TimeLi[i].style.width=TimeLi[i].scrollHeight*0.4+"px";
-                        TimeLi[i].style.lineHeight=TimeLi[i].scrollHeight+'px';    
-                        TimeLi[i].innerText=itm;
-                        if(num<=aRR.length){
-                            TimeLilen+=(TimeLi[i].scrollHeight*0.4);
-                            Timeul.style.width=TimeLilen+'px';
-                        }
-                    })
-                };       
-
+       
         //播放进度点击拖拽调节,快进，快退
 
                 function Progressbarcss(){
@@ -525,7 +619,7 @@
                     P1.style.width=0; 
                     P1.style.backgroundSize="0 14px"; 
                 }
-            }    
+            } 
         </script>
     </body>
 </html>
