@@ -42,18 +42,21 @@
                 min-height:500px;
                 position:relative;
                 margin:20px auto;
+                background-image:url("./images/tbfjkttm.jpg");
+                background-size:"cover";
+                background-repeat:"no-repeat";
+                background-position:"center";
             }
-            #video>h2{
+            #video>h3{
                 width:100%;
-                height:8%;
+                height:10%;
                 text-align:center;
                 font-weight:bold;
-                background-color:#ccc;
+                color:#fff;
             }
             #video>video{
                 width:100%;
                 height:92%;
-                background-image:url("./images/item.png");
             }
             #video>.controls{
                 width:100%;
@@ -155,7 +158,7 @@
     </head>
     <body>
         <div id="video">
-            <h2>我的播放器</h2>
+            <h3>我的播放器</h3>
             <video src="" controls poster=""></video>
             <ul class="controls">
                 <li class="playbox">
@@ -197,7 +200,7 @@
             let upload=document.querySelector(".upload>input");
             let videoFile=document.querySelector("#video>video");
             let ProgressBar=document.querySelector(".Progress-bar");
-            let H=document.querySelector("#video>h2");
+            let H=document.querySelector("#video>h3");
             let playBox=document.querySelector(".playbox");
             let Play=document.querySelector(".playbox .play");
             let P1=document.querySelector(".Progress-bar>p");
@@ -219,8 +222,8 @@
 
             function videocss(){
                 playBox.style.width=document.querySelector("#video").scrollWidth-ProgressBar.scrollWidth-wardBox.scrollWidth+"px";
-                H.style.lineHeight=document.querySelector("#video").scrollHeight*0.08+"px";
-                H.style.fontSize=parseInt(H.style.lineHeight)*0.5+'px';
+                H.style.lineHeight=document.querySelector("#video").scrollHeight*0.1+"px";
+                H.style.fontSize=parseInt(H.style.lineHeight)*0.4+'px';
                 Loopplay.style.lineHeight=Loopplay.scrollHeight+"px";
                 Loopplay.style.width=Loopplay.scrollHeight+4+"px";
                 Loopplay.style.fontSize=Loopplay.scrollHeight*0.4+"px";
@@ -257,7 +260,7 @@
                         videoFile.height=videoFile.videoHeight;
                     }
                     document.querySelector("#video").style.width=videoFile.width+"px";
-                    document.querySelector("#video").style.height=Math.floor(videoFile.height/0.9)+"px";
+                    document.querySelector("#video").style.height=Math.floor(videoFile.height/0.92)+"px";
                 };uploadcss();videocss();
                 H.innerText=this.files[0].name.split(".")[0];
                 volumeTag=true;
@@ -282,7 +285,7 @@
                         ScreenTag=true;
                     }else{
                         document.querySelector("#video").style.width=videoFile.videoWidth+"px";
-                        document.querySelector("#video").style.height=Math.floor(videoFile.videoHeight/0.9)+"px";
+                        document.querySelector("#video").style.height=Math.floor(videoFile.videoHeight/0.92)+"px";
                         videocss();
                         this.style.backgroundImage="url('./images/全屏.png')";
                         ScreenTag=false;
@@ -403,16 +406,16 @@
                     Timeul.innerHTML="";
                     aRR.forEach(function(itm,i){
                         num++;
-                        if(num<=aRR.length){
-                            TimeLilen+=(TimeLi[i].scrollHeight*0.4);
-                            Timeul.style.width=TimeLilen+'px';
-                        }
                         Timeul.innerHTML+="<li></li>";
                         let TimeLi=document.querySelectorAll(".time>ul>li");    
                         TimeLi[i].style.fontSize=TimeLi[i].scrollHeight*0.6+"px";
                         TimeLi[i].style.width=TimeLi[i].scrollHeight*0.4+"px";
                         TimeLi[i].style.lineHeight=TimeLi[i].scrollHeight+'px';    
                         TimeLi[i].innerText=itm;
+                        if(num<=aRR.length){
+                            TimeLilen+=(TimeLi[i].scrollHeight*0.4);
+                            Timeul.style.width=TimeLilen+'px';
+                        }
                     })
                 };       
 
