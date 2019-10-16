@@ -1,3 +1,29 @@
+//works:Video player;
+//author:13564805727@139.com,编程小白;
+//school:tanzhou;
+// class：第二期框架班
+
+//变量：Vol===音量节点；volumeValue/P2===音量条节点；load/upload===视频加载节点；
+//videoFile===视频元素；ProgressBar/P1===播放进度条节点；H===视频顶部名称节点；playBox===前部播放控件节点；
+//Play===播放暂停节点；Forward===快进节点；Rewind===快退节点；Screen===全屏节点；wardBox===后部控件节点；
+//Loopplay===重播节点；Timeui/TimeLi===播放时钟节点；video===视频外部容器节点；playTag===播放状态；
+//videoTag===视频加载状态；volumeTag===音量块隐藏状态；ScreensTag===全屏开启状态；aRR===播放时间数组；
+//ARR===播放控件背景图片数组；TimeLilen===播放时钟长度值；num===循环计数；playProgress===播放比例；
+//volumeProgress===音量比例；
+
+//函数：videocss===播放器初始样式，响应式样式；
+//Horizontalscreen===横屏样式；
+//Verticalscreen===竖屏样式；
+//fullscreen===居中样式；
+//playTime===播放时间计算；
+//volumecss===音量条基础样式；
+//volumeTime===音量条动态样式；
+//videorun===播放暂停；
+//Progressbarcss===播放进度条基础样式；
+//ProgressTime===播放进度条动态样式；
+
+
+
 <!DOCtype html>
 <html>
     <head>
@@ -7,6 +33,9 @@
         <meta name="keywords" content="">
         <meta name="description" content="">
         <style>
+
+    <!--清空默认样式-->
+
             div,p,h1,h2,h3,h4,h5.h6,ul,ol,li,a,body,input,img
             {
                 margin:0;
@@ -33,15 +62,22 @@
                 width:100%;
                 height:100%;
                 -webkit-user-select:none;
+                position:relative;
             }
 
+    <!--外部容器-->
 
             #video{
-                position:relative;
+                position:absolute;
                 background-image:url("./images/tbfjkttm.jpg");
                 background-size:"cover";
                 background-repeat:"no-repeat";
                 background-position:"center";
+                margin:auto;
+                left:0;
+                right:0;
+                top:0;
+                bottom:0;
             }
             #video>h3{
                 width:100%;
@@ -50,9 +86,12 @@
                 font-weight:bold;
                 color:#fff;
             }
+
+     <!--播放控件--> 
+
             #video>.controls{
                 width:100%;
-                height:12%;
+                height:10%;
                 margin-left:5px;
                 background-color:transparent;
                 display:flex;
@@ -60,7 +99,7 @@
                 align-items:center;
                 position:absolute;
                 left:0;
-                bottom:2px; 
+                bottom:0; 
             }
             #video>.controls .playbox{
                 height:100%;
@@ -180,11 +219,11 @@
         </div>
         <script>
 
-        //获取节点，定义全局变量
+    //获取节点，定义全局变量
 
             let Vol=document.querySelector(".volume");
             let volumeValue=document.querySelector(".volumeValue");
-            let UPload=document.querySelector(".upload");
+            let load=document.querySelector(".upload");
             let upload=document.querySelector(".upload>input");
             let videoFile=document.querySelector("#video>video");
             let ProgressBar=document.querySelector(".Progress-bar");
@@ -215,17 +254,25 @@
                         video.style.width=document.documentElement.clientWidth*0.6+"px";
                         video.style.height=document.documentElement.clientWidth*0.6*0.6+"px";
                     }else{
-                        video.style.width=document.documentElement.clientWidth*0.8+"px";
-                        video.style.height=document.documentElement.clientWidth*0.8*0.6+"px";
+                        if(document.documentElement.clientWidth>document.documentElement.clientHeight){
+                            video.style.height=document.documentElement.clientHeight*0.8+"px";
+                            video.style.width=document.documentElement.clientHeight*1.2+"px";
+                        }else{
+                            video.style.width=document.documentElement.clientWidth*0.8+"px";
+                            video.style.height=document.documentElement.clientWidth*0.8*0.6+"px";
+                        }
                     }   
                 }else{
                     video.style.width=videoFile.style.width;
+                    if(document.documentElement.clientWidth<415)
+                    video.style.height=videoFile.style.height;
+                    if(415<=document.documentElement.clientWidth<768)
+                    video.style.height=parseInt(videoFile.style.height)/0.95+"px";
+                    if(document.documentElement.clientWidth>=768)
                     video.style.height=parseInt(videoFile.style.height)/0.9+"px";
                 }
-                if(document.documentElement.clientWidth<450){
-                    video.style.margin="2% auto";
-                    H.style.lineHeight=video.scrollHeight*0.05+"px";
-                    H.style.fontSize=parseInt(H.style.lineHeight)*0.2+'px';
+                if(document.documentElement.clientWidth<415){
+                    H.style.height=0;
                     document.querySelector(".controls").style.height=video.scrollHeight*0.16+"px";
                     ProgressBar.style.width=video.scrollWidth*0.45+"px";
                     wardBox.style.width=video.scrollWidth*0.25+"px";
@@ -233,27 +280,28 @@
                     ProgressBar.style.height="8px";
                     volumeValue.style.width="6px";
                 }else{
-                    if(document.documentElement.clientWidth<768){
-                        video.style.margin="2% auto";
+                    if(415<=document.documentElement.clientWidth<768){
                         document.querySelector(".controls").style.height=video.scrollHeight*0.14+"px";
                         ProgressBar.style.height="8px";
                         volumeValue.style.width="6px";
-                        H.style.lineHeight=video.scrollHeight*0.05+"px";
-                        H.style.fontSize=parseInt(H.style.lineHeight)*0.2+'px';
+                        H.style.height=(videoFile.height/0.9)*0.06+"px";
+                        H.style.lineHeight=video.scrollHeight*0.06+"px";
+                        H.style.fontSize=parseInt(H.style.lineHeight)*0.3+'px';
+                    }else{
+                        document.querySelector(".controls").style.height=video.scrollHeight*0.12+"px";
+                        ProgressBar.style.height="12px";
+                        volumeValue.style.width="10px";
+                        H.style.height=(videoFile.height/0.9)*0.12+"px";
+                        H.style.lineHeight=video.scrollHeight*0.12+"px";
+                        H.style.fontSize=parseInt(H.style.lineHeight)*0.4+'px';
                     }
-                    video.style.margin="4% auto";
-                    document.querySelector(".controls").style.height=video.scrollHeight*0.12+"px";
                     ProgressBar.style.width=video.scrollWidth*0.3+"px";
                     wardBox.style.width=video.scrollWidth*0.3+"px";
                     playBox.style.width=video.scrollWidth*0.3+"px";
-                    ProgressBar.style.height="12px";
-                    volumeValue.style.width="10px";
-                    H.style.lineHeight=video.scrollHeight*0.1+"px";
-                    H.style.fontSize=parseInt(H.style.lineHeight)*0.4+'px';
                 }
                 let TimeLi=document.querySelectorAll(".time>ul>li");
                 for(let i=0;i<TimeLi.length;i++){
-                    if(document.documentElement.clientWidth<450){
+                    if(document.documentElement.clientWidth<415){
                         TimeLi[i].style.width=0;
                         TimeLi[i].style.display="none";
                     }else{
@@ -270,7 +318,7 @@
                     [Screen,'./images/全屏.png'],
                     [Rewind,'./images/快退.png'],
                     [Vol,'./images/音量键.png'],
-                    [UPload,'./images/上传.png']
+                    [load,'./images/上传.png']
                 ];
                 if(document.documentElement.clientWidth<768){
                     ARR[1][0].style.display="none";
@@ -299,21 +347,71 @@
                     itm[0].style.backgroundPosition="center";
                 });
             };videocss();
+            
+        //屏幕自适应变化
+
+            function Horizontalscreen(){
+                videoFile.style.height=document.documentElement.clientHeight*0.9+"px";
+                videoFile.height=document.documentElement.clientHeight*0.9;
+                videoFile.style.width=(document.documentElement.clientHeight*0.9/videoFile.videoHeight)*videoFile.videoWidth+"px";
+                videoFile.width=(document.documentElement.clientHeight*0.9/videoFile.videoHeight)*videoFile.videoWidth;
+            };
+            function Verticalscreen(){
+                videoFile.style.width=document.documentElement.clientWidth+"px";
+                videoFile.width=document.documentElement.clientWidth;
+                videoFile.style.height=(document.documentElement.clientWidth/videoFile.videoWidth)*videoFile.videoHeight+"px";
+                videoFile.height=(document.documentElement.clientWidth/videoFile.videoWidth)*videoFile.videoHeight;
+            };
+            function fullscreen(){
+                videoFile.style.width=videoFile.videoWidth+"px";
+                videoFile.width=videoFile.videoWidth;
+                videoFile.style.height=videoFile.videoHeight+"px";
+                videoFile.height=videoFile.videoHeight;
+            };
             window.onresize=function(){
-                if(document.documentElement.clientWidth<videoFile.videoWidth){
-                    if(videoFile.scrollHeight>document.documentElement.clientHeight){
-                        videoFile.style.height=document.documentElement.clientHeight+"px";
-                        videoFile.height=document.documentElement.clientHeight;
-                        videoFile.style.width=(document.documentElement.clientHeight/videoFile.height)*videoFile.videoWidth+"px";
-                        videoFile.width=(document.documentElement.clientHeight/videoFile.height)*videoFile.videoWidth;
-                    }
-                    videoFile.style.width=document.documentElement.clientWidth+"px";
-                    videoFile.width=document.documentElement.clientWidth;
-                    videoFile.style.height=(document.documentElement.clientWidth/videoFile.videoWidth)*videoFile.videoHeight+"px";
-                    videoFile.height=(document.documentElement.clientWidth/videoFile.videoWidth)*videoFile.videoHeight;
+                if(!videoTag&&!ScreenTag){
+                    videocss();
                 }
-                videocss(); 
-            }
+                if(document.documentElement.clientWidth<768){
+                    if(document.documentElement.clientHeight<415){
+                        if(document.documentElement.clientWidth>document.documentElement.clientHeight){
+                            Horizontalscreen();videocss();
+                        }else{
+                            Verticalscreen();videocss();
+                        }
+                    }else{
+                        if(document.documentElement.clientWidth<videoFile.scrollWidth){
+                            Verticalscreen();videocss();
+                        }
+                        if(document.documentElement.clientHeight<videoFile.scrollHeight){
+                            Horizontalscreen();videocss();
+                        }
+                        
+                    }
+                }else{
+                    if(document.documentElement.clientHeight<415){
+                        if(document.documentElement.clientWidth>document.documentElement.clientHeight){
+                            Horizontalscreen();videocss();
+                        }else{
+                            Verticalscreen();videocss();
+                        }
+                    }else{
+                        if(videoFile.videoWidth>videoFile.videoHeight){
+                            if(videoFile.videoWidth>document.documentElement.clientWidth){
+                                Verticalscreen();videocss();
+                            }else{
+                                fullscreen();videocss();
+                            }
+                        }else{
+                            if(videoFile.videoHeight>document.documentElement.clientHeight){
+                                Horizontalscreen();videocss();
+                            }else{
+                                fullscreen();videocss();
+                            }
+                        }
+                    }
+                } 
+            };
 
         //视频加载
 
@@ -344,29 +442,18 @@
                         x,
                         Math.floor(second/10),second-Math.floor(second/10)*10
                         ];
-                    let Arr=[
-                        Math.floor(Minute/10),Minute-Math.floor(Minute/10)*10,
-                        x,
-                        Math.floor(Second/10),Second-Math.floor(Second/10)*10,
-                        y,
-                        Math.floor(minute/10),minute-Math.floor(minute/10)*10,
-                        x,
-                        Math.floor(second/10),second-Math.floor(second/10)*10
-                    ];
-                    let ARr=[
-                        Math.floor(Second/10),Second-Math.floor(Second/10)*10,
-                        y,
-                        Math.floor(second/10),second-Math.floor(second/10)*10
-                    ];
-                    if(videoFile.duration>=3600)aRR=arr;
-                    if(3600>videoFile.duration>=60)aRR=Arr;
-                    if(60>videoFile.duration>0)aRR=ARr;
+                    if(videoFile.duration>=3600)
+                    aRR=arr;
+                    if(3600>videoFile.duration>=60)
+                    aRR=[arr[3],arr[4],arr[5],arr[6],arr[7],arr[8],arr[12],arr[13],arr[14],arr[15],arr[16]];
+                    if(60>videoFile.duration>=0)
+                    aRR=[arr[6],arr[7],arr[8],arr[15],arr[16]];
                     Timeul.innerHTML="";
                     aRR.forEach(function(itm,i){
                         num++;
                         Timeul.innerHTML+="<li></li>";
                         let TimeLi=document.querySelectorAll(".time>ul>li"); 
-                        if(document.documentElement.clientWidth<450){
+                        if(document.documentElement.clientWidth<415){
                             TimeLi[i].style.width=0;
                             TimeLi[i].style.display="none";
                         }else{
@@ -386,57 +473,40 @@
         //视频加载成功执行
 
                 setTimeout(function(){
-                    if(document.documentElement.clientWidth>=document.documentElement.clientHeight){
+                    function Horizontalscreen1(){
+                        videoFile.style.height=document.documentElement.clientHeight*0.9*0.6+"px";
+                        videoFile.height=document.documentElement.clientHeight*0.9*0.6;
+                        videoFile.style.width=(document.documentElement.clientHeight*0.9*0.6/videoFile.videoHeight)*videoFile.videoWidth+"px";
+                        videoFile.width=(document.documentElement.clientHeight*0.9*0.6/videoFile.videoHeight)*videoFile.videoWidth;
+                    };
+                    function Verticalscreen1(){
+                        videoFile.style.width=document.documentElement.clientWidth*0.6+"px";
+                        videoFile.width=document.documentElement.clientWidth*0.6;
+                        videoFile.style.height=(document.documentElement.clientWidth*0.6/videoFile.videoWidth)*videoFile.videoHeight+"px";
+                        videoFile.height=(document.documentElement.clientWidth*0.6/videoFile.videoWidth)*videoFile.videoHeight;
+                    };
+                    if(document.documentElement.clientWidth<768){
+                        if(document.documentElement.clientWidth>=document.documentElement.clientHeight){
+                            Horizontalscreen1();videocss();playTime();
+                        }else{
+                            Verticalscreen1();videocss();playTime();
+                        }
+                    }else{
                         if(videoFile.videoWidth>videoFile.videoHeight){
                             if(videoFile.videoWidth>document.documentElement.clientWidth*0.6){
-                                videoFile.style.width=document.documentElement.clientWidth*0.6+"px";
-                                videoFile.width=document.documentElement.clientWidth*0.6;
-                                videoFile.style.height=videoFile.videoHeight*(document.documentElement.clientWidth*0.6/videoFile.videoWidth)+"px";
-                                videoFile.height=videoFile.videoHeight*(document.documentElement.clientWidth*0.6/videoFile.videoWidth);
+                                Verticalscreen1();videocss();playTime();
                             }else{
-                                videoFile.style.width=videoFile.videoWidth+"px";
-                                videoFile.width=videoFile.videoWidth;
-                                videoFile.style.height=videoFile.videoHeight+"px";
-                                videoFile.height=videoFile.videoHeight;
-                            }
-                            if(videoFile.videoHeight>document.documentElement.clientHeight){
-                                videoFile.style.height=document.documentElement.clientHeight+"px";
-                                videoFile.height=document.documentElement.clientHeight;
-                                videoFile.style.width=(document.documentElement.clientHeight/videoFile.height)*videoFile.videoWidth+"px";
-                                videoFile.width=(document.documentElement.clientHeight/videoFile.height)*videoFile.videoWidth;
+                                fullscreen();videocss();playTime();
                             }
                         }else{
                             if(videoFile.videoHeight>document.documentElement.clientHeight*0.6){
-                                videoFile.style.height=document.documentElement.clientHeight*0.6+"px";
-                                videoFile.height=document.documentElement.clientHeight*0.6;
-                                videoFile.style.width=videoFile.videoWidth*(document.documentElement.clientHeight*0.6/videoFile.videoHeight)+"px";
-                                videoFile.width=videoFile.videoWidth*(document.documentElement.clientHeight*0.6/videoFile.videoHeight);
+                                Horizontalscreen1();videocss();playTime();
                             }else{
-                                videoFile.style.width=videoFile.videoWidth+"px";
-                                videoFile.width=videoFile.videoWidth;
-                                videoFile.style.height=videoFile.videoHeight+"px";
-                                videoFile.height=videoFile.videoHeight;
+                                fullscreen();videocss();playTime();
                             }
                         }
-                        if(videoFile.videoHeight>document.documentElement.clientHeight){
-                            videoFile.style.height=document.documentElement.clientHeight+"px";
-                            videoFile.height=document.documentElement.clientHeight;
-                            videoFile.style.width=(document.documentElement.clientHeight/videoFile.height)*videoFile.videoWidth+"px";
-                            videoFile.width=(document.documentElement.clientHeight/videoFile.height)*videoFile.videoWidth;
-                        }else{
-                            videoFile.style.width=videoFile.videoWidth+"px";
-                            videoFile.width=videoFile.videoWidth;
-                            videoFile.style.height=videoFile.videoHeight+"px";
-                            videoFile.height=videoFile.videoHeight;
-                        }
-                    }else{
-                        videoFile.style.width=document.documentElement.clientWidth+"px";
-                        videoFile.width=document.documentElement.clientWidth;
-                        videoFile.style.height=(document.documentElement.clientWidth/videoFile.videoWidth)*videoFile.videoHeight+"px";
-                        videoFile.height=(document.documentElement.clientWidth/videoFile.videoWidth)*videoFile.videoHeight;
                     }
-                    videocss();playTime();
-                },350);
+                },500);
                 H.innerText=this.files[0].name.split(".")[0];
                 volumeTag=true;
                 playTag=false;
@@ -454,36 +524,58 @@
                 Screen.onclick=function(){
                     if(!ScreenTag){
                         ScreenTag=true;
-                        if(videoFile.videoWidth>videoFile.videoHeight){
-                            if(videoFile.scrollWidth>document.documentElement.clientWidth){
-                                videoFile.style.width=document.documentElement.clientWidth+"px";
-                                videoFile.width=document.documentElement.clientWidth;
-                                videoFile.style.height=(document.documentElement.clientWidth/videoFile.videoWidth)*videoFile.videoHeight+"px";
-                                videoFile.height=(document.documentElement.clientWidth/videoFile.videoWidth)*videoFile.videoHeight;
+                        if(document.documentElement.clientWidth<768){
+                            if(document.documentElement.clientWidth>=document.documentElement.clientHeight){
+                                Horizontalscreen();videocss();
                             }else{
-                                videoFile.style.width=videoFile.videoWidth+"px";
-                                videoFile.width=videoFile.videoWidth;
-                                videoFile.style.height=videoFile.videoHeight+"px";
-                                videoFile.height=videoFile.videoHeight;
+                                Verticalscreen();videocss();
                             }
                         }else{
-                            videoFile.style.height=document.documentElement.clientHeight+"px";
-                            videoFile.height=document.documentElement.clientHeight;
-                            videoFile.style.width=(document.documentElement.clientHeight/videoFile.height)*videoFile.videoWidth+"px";
-                            videoFile.width=(document.documentElement.clientHeight/videoFile.height)*videoFile.videoWidth;
+                            if(videoFile.videoWidth>videoFile.videoHeight){
+                                if(videoFile.videoWidth>document.documentElement.clientWidth){
+                                    Verticalscreen();videocss();
+                                }else{
+                                    fullscreen();videocss();
+                                }
+                            }else{
+                                if(videoFile.videoHeight>document.documentElement.clientHeight){
+                                    Horizontalscreen();videocss();
+                                }else{
+                                    fullscreen();videocss();
+                                }
+                            }
                         }
-                        videocss();
                         this.style.backgroundImage="url('./images/全屏退出.png')";
                     }else{
                         ScreenTag=false;
-                        videoFile.style.width=document.documentElement.clientWidth*0.6+"px";
-                        videoFile.width=document.documentElement.clientWidth*0.6;
-                        videoFile.style.height=document.documentElement.clientWidth*0.6*(videoFile.videoHeight/videoFile.videoWidth)+"px";
-                        videoFile.height=document.documentElement.clientWidth*0.6*(videoFile.videoHeight/videoFile.videoWidth);
-                        videocss();
+                        function Horizontalscreen(){
+                            videoFile.style.width=document.documentElement.clientWidth*0.6+"px";
+                            videoFile.width=document.documentElement.clientWidth*0.6;
+                            videoFile.style.height=(document.documentElement.clientWidth*0.6/videoFile.videoWidth)*videoFile.videoHeight+"px";
+                            videoFile.height=(document.documentElement.clientWidth*0.6/videoFile.videoWidth)*videoFile.videoHeight;
+                        };
+                        function Verticalscreen(){
+                            videoFile.style.Height=document.documentElement.clientHeight*0.6+"px";
+                            videoFile.height=document.documentElement.clientHeight*0.6;
+                            videoFile.style.width=(document.documentElement.clientHeight*0.6/videoFile.videoHeight)*videoFile.videoWidth+"px";
+                            videoFile.width=(document.documentElement.clientHeight*0.6/videoFile.videoHeight)*videoFile.videoWidth;
+                        };
+                        if(document.documentElement.clientWidth<768){
+                            if(document.documentElement.clientWidth>=document.documentElement.clientHeight){
+                                Verticalscreen();videocss();
+                            }else{
+                                Horizontalscreen();videocss();
+                            }
+                        }else{
+                            if(videoFile.videoWidth>videoFile.videoHeight){
+                                Horizontalscreen();videocss();
+                            }else{
+                                Verticalscreen();videocss();
+                            }
+                        }
                     }
                 }
-
+            
             //音量开关，拖拽调节音量大小
 
                 function volumeTime(ev=window.event){
@@ -541,7 +633,7 @@
 
             //视频播放与暂停
 
-                Play.onclick=function(){
+                function videorun(){
                     if(videoTag){
                         if(playTag){
                             videoFile.pause();
@@ -553,6 +645,12 @@
                             Play.style.backgroundImage="url('./images/暂停键.png')";
                         }
                     }
+                }
+                Play.onclick=function(){
+                    videorun();
+                }
+                videoFile.onclick=function(){
+                    videorun();
                 }
        
         //播放进度点击拖拽调节,快进，快退
